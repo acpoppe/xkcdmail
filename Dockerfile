@@ -9,3 +9,6 @@ COPY . .
 RUN go build -v -o /usr/local/bin/app ./...
 
 CMD ["app"]
+
+# docker build -t xkcdmail .
+# docker run -it --rm --name xkcdmail xkcdmail
