@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bufio"
-	"encoding/csv"
 	"encoding/json"
 	"io"
 	"log"
@@ -11,6 +9,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
 
 type newestComic struct {
@@ -21,20 +21,28 @@ type newestComic struct {
 }
 
 func main() {
-	readDotEnvFile()
+	// readDotEnvFile()
 	jsonUrl := "https://xkcd.com/info.0.json"
 
-	r := csv.NewReader(strings.NewReader(os.Getenv("TO")))
-	r.Comma = ','
-	r.Comment = '#'
-
-	toEmails, err := r.Read()
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatal(err)
+			log.Fatalf("err loading: %v", err)
 	}
 
+	to := os.Getenv("TO")
+	if to == "" {
+		log.Fatal("Missing TO environment variable.")
+	}
+	toEmails := strings.Split(to, ",")
+
 	fromEmail := os.Getenv("FROM")
+	if fromEmail == "" {
+		log.Fatal("Missing FROM environment variable.")
+	}
 	fromPassword := os.Getenv("PASSWORD")
+	if fromPassword == "" {
+		log.Fatal("Missing PASSWORD environment variable.")
+	}
 
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
@@ -125,40 +133,6 @@ func sendErrorEmail(host string, port string, auth smtp.Auth, from string, to []
 	}
 
 	os.Exit(-1)
-}
-
-func readDotEnvFile() {
-	file, err := os.Open(".env")
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer file.Close()
-
-	envMap := make(map[string]string)
-
-	var lines []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-
-	if err = scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	for _, line := range lines {
-		if len(strings.TrimSpace(line)) != 0 && !strings.HasPrefix(strings.TrimSpace(line), "#") {
-			var key, value string
-			key, value = parseEnvLine(line)
-
-			envMap[key] = value
-		}
-	}
-
-	for key, value := range envMap {
-		os.Setenv(key, value)
-	}
 }
 
 func parseEnvLine(line string) (key string, value string) {
