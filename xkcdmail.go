@@ -9,8 +9,6 @@ import (
 	"os"
 	"strconv"
 	"strings"
-
-	"github.com/joho/godotenv"
 )
 
 type newestComic struct {
@@ -24,10 +22,10 @@ func main() {
 	// readDotEnvFile()
 	jsonUrl := "https://xkcd.com/info.0.json"
 
-	err := godotenv.Load()
-	if err != nil {
-			log.Fatalf("err loading: %v", err)
-	}
+	// err := godotenv.Load()
+	// if err != nil {
+	// 		log.Fatalf("err loading: %v", err)
+	// }
 
 	to := os.Getenv("TO")
 	if to == "" {
