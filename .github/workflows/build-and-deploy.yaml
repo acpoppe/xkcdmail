@@ -1,0 +1,17 @@
+name: Docker Deploy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy-xkcdmail-to-dev:
+    uses: acpoppe/workflows/.github/workflows/docker-build-and-deploy.yaml@main
+    with:
+      dockerfile_path: ./Dockerfile
+      context_path: .
+      app_name: xkcdmail
+      env: dev
+      push: true
+    secrets:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
