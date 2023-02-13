@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-and-deploy-xkcdmail-to-dev:
-    uses: acpoppe/workflows/.github/workflows/docker-build-and-deploy.yaml@main
+    uses: ./.github/workflows/docker-build-and-deploy.yaml
     with:
       dockerfile_path: ./Dockerfile
       context_path: .

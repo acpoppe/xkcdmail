@@ -1,0 +1,50 @@
+name: Docker Deploy
+
+on:
+  workflow_call:
+    inputs:
+      dockerfile_path:
+        description: ''
+        required: true
+        type: string
+      context_path:
+        description: ''
+        required: true
+        type: string
+      app_name:
+        description: ''
+        required: true
+        type: string
+      env:
+        description: '"prod", "stag", or "dev"'
+        required: true
+        type: string
+      push:
+        description: "Push is a shorthand for --output=type=registry"
+        required: false
+        default: false
+        type: boolean
+    secrets:
+      DOCKER_HUB_USERNAME:
+        description: ''
+        required: true
+      DOCKER_HUB_PASSWORD:
+        description: ''
+        required: true
+
+jobs:
+  docker-build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Build and Deploy to ${{ inputs.env }}
+        uses: ./.github/actions/docker-deploy
+        with:
+          dockerfile_path: ${{ inputs.dockerfile_path }}
+          context_path: ${{ inputs.context_path }}
+          dockerhub_user_name: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub_password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+          app_name: ${{ inputs.app_name }}
+          env: ${{ inputs.env }}
+          push: ${{ inputs.push }}
