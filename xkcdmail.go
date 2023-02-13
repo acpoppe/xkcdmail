@@ -22,11 +22,6 @@ func main() {
 	// readDotEnvFile()
 	jsonUrl := "https://xkcd.com/info.0.json"
 
-	// err := godotenv.Load()
-	// if err != nil {
-	// 		log.Fatalf("err loading: %v", err)
-	// }
-
 	to := os.Getenv("TO")
 	if to == "" {
 		log.Fatal("Missing TO environment variable.")
@@ -131,10 +126,4 @@ func sendErrorEmail(host string, port string, auth smtp.Auth, from string, to []
 	}
 
 	os.Exit(-1)
-}
-
-func parseEnvLine(line string) (key string, value string) {
-	lineWithoutComments := strings.Split(line, "#")[0]
-	keyValuePair := strings.Split(lineWithoutComments, "=")
-	return keyValuePair[0], keyValuePair[1]
 }
